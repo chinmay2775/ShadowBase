@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
 
-// Day 1 frontend deliverable: prove the React app runs AND can reach the backend.
-// This calls GET /health on the Spring Boot backend and shows the result.
 const BACKEND_URL = 'http://localhost:8080'
 
 export default function App() {

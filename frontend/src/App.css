@@ -1,0 +1,61 @@
+:root {
+  color-scheme: dark;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: #0f1115;
+  color: #e6e8eb;
+}
+
+.app {
+  max-width: 640px;
+  margin: 8vh auto;
+  padding: 0 24px;
+}
+
+h1 {
+  margin-bottom: 4px;
+  font-size: 2.2rem;
+}
+
+.subtitle {
+  margin-top: 0;
+  color: #8b93a1;
+}
+
+.status-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: #1a1e26;
+  border: 1px solid #2a2f3a;
+  margin: 24px 0;
+}
+
+.status-card pre {
+  margin: 6px 0 0;
+  font-size: 0.85rem;
+  color: #a9b1bd;
+  white-space: pre-wrap;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-top: 4px;
+  flex-shrink: 0;
+  background: #f0b429; 
+}
+
+.status-card.connected .dot { background: #34d399; }
+.status-card.offline .dot { background: #f87171; }
+
+.hint {
+  color: #8b93a1;
+  font-size: 0.9rem;
+}

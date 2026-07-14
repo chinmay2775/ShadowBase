@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import SqlEditor from './components/SqlEditor.jsx'
 
 const BACKEND_URL = 'http://localhost:8080'
 
@@ -34,6 +35,9 @@ export default function App() {
           <pre>{detail ? JSON.stringify(detail, null, 2) : ''}</pre>
         </div>
       </div>
+    
+      <SqlEditor />
+      
     </div>
   )
 }

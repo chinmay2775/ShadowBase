@@ -1,13 +1,15 @@
 package com.shadowbase.controller;
-
-import java.util.Map;
 import com.shadowbase.dto.DatabaseInfo;
 import com.shadowbase.service.DatabaseService;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
+
+import java.util.Map;
+
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,6 +34,11 @@ public class DatabaseController {
         return Map.of("message", databaseService.seed(id));
     }
 
+    @PostMapping("/{id}/execute")
+    public Map<String, Object> execute(@PathVariable String id, @RequestBody Map<String, String> body) {
+        return databaseService.execute(id, body.get("sql"));
+    }
+    
     @DeleteMapping("/{id}")
     public Map<String, String> destroy(@PathVariable String id) {
         databaseService.destroy(id);

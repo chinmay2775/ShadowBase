@@ -1,19 +1,40 @@
 import { useState, useRef } from 'react'
 import Editor from '@monaco-editor/react'
 
+const BACKEND_URL = 'http://localhost:8080'
 
-export default function SqlEditor() {
-  const [output, setOutput] = useState('')
+export default function SqlEditor({ dbId }) {
+  const [result, setResult] = useState(null)
+  const [running, setRunning] = useState(false)
   const editorRef = useRef(null)
 
   function handleEditorMount(editor) {
     editorRef.current = editor
   }
 
-  function handleRun() {
+  async function handleRun() {
+    if (!dbId) {
+      setResult({ success: false, error: 'No sandbox database yet — click "New Sandbox DB" above first.' })
+      return
+    }
+
     const sql = editorRef.current.getValue()
-    console.log('SQL to run:', sql)
-    setOutput(sql)
+    setRunning(true)
+    setResult(null)
+
+    try {
+      const res = await fetch(`${BACKEND_URL}/db/${dbId}/execute`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sql }),
+      })
+      const data = await res.json()
+      setResult(data)
+    } catch (err) {
+      setResult({ success: false, error: err.message })
+    } finally {
+      setRunning(false)
+    }
   }
 
   return (
@@ -26,7 +47,7 @@ export default function SqlEditor() {
       <Editor
         height="240px"
         defaultLanguage="sql"
-        defaultValue={'-- Write your migration SQL here\nALTER TABLE customers DROP COLUMN email;'}
+        defaultValue={'-- Write your migration SQL here\nSELECT * FROM customers;'}
         theme="vs-dark"
         onMount={handleEditorMount}
         options={{
@@ -35,10 +56,16 @@ export default function SqlEditor() {
         }}
       />
       
-      {output && (
-        <div className="sql-output">
-          <strong>Captured text:</strong>
-          <pre>{output}</pre>
+      {result && (
+        <div className={`sql-output ${result.success ? 'success' : 'error'}`}>
+          {result.success ? (
+            <>
+              <strong>✅ {result.message ?? 'Query succeeded'}</strong>
+              {result.rows && <pre>{JSON.stringify(result.rows, null, 2)}</pre>}
+            </>
+          ) : (
+            <strong>❌ {result.error}</strong>
+          )}
         </div>
       )}
     </div>

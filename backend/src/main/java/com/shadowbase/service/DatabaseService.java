@@ -9,13 +9,17 @@ import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.postgresql.PostgreSQLContainer;
 import org.springframework.web.server.ResponseStatusException;
 
-
 import java.util.Map;
+import java.util.List;
 import java.util.UUID;
+import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.DriverManager;
+import java.util.LinkedHashMap;
+import java.sql.ResultSetMetaData;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Service
@@ -59,7 +63,6 @@ public class DatabaseService {
     public String seed(String id) {
         PostgreSQLContainer container = require(id);
 
-        // Open a real JDBC connection to the running container, using its own details.
         try (Connection conn = DriverManager.getConnection(
                 container.getJdbcUrl(), container.getUsername(), container.getPassword());
              Statement stmt = conn.createStatement()) {
@@ -87,10 +90,60 @@ public class DatabaseService {
         }
     }
 
+    public Map<String, Object> execute(String id, String sql) {
+        PostgreSQLContainer container = require(id);
+
+        if (sql == null || sql.isBlank()) {
+            return Map.of("success", false, "error", "No SQL provided");
+        }
+
+        try (Connection conn = DriverManager.getConnection(
+                container.getJdbcUrl(), container.getUsername(), container.getPassword());
+             Statement stmt = conn.createStatement()) {
+
+            boolean hasResultSet = stmt.execute(sql);
+
+            if (hasResultSet) {
+                try (ResultSet rs = stmt.getResultSet()) {
+                    return Map.of(
+                            "success", true,
+                            "rows", resultSetToList(rs)
+                    );
+                }
+            } else {
+                int updateCount = stmt.getUpdateCount();
+                return Map.of(
+                        "success", true,
+                        "message", "Statement executed. Rows affected: " + updateCount
+                );
+            }
+
+        } catch (SQLException e) {
+            String message = e.getMessage() != null ? e.getMessage() : e.toString();
+            log.warn("SQL error on database {}: {}", id, message);
+            return Map.of("success", false, "error", message);
+        }
+    }
+
+    private List<Map<String, Object>> resultSetToList(ResultSet rs) throws SQLException {
+        ResultSetMetaData meta = rs.getMetaData();
+        int columnCount = meta.getColumnCount();
+        List<Map<String, Object>> rows = new ArrayList<>();
+
+        while (rs.next()) {
+            Map<String, Object> row = new LinkedHashMap<>();
+            for (int i = 1; i <= columnCount; i++) {
+                row.put(meta.getColumnLabel(i), rs.getObject(i));
+            }
+            rows.add(row);
+        }
+        return rows;
+    }
+    
     public void destroy(String id) {
         PostgreSQLContainer container = require(id);
-        container.stop();          // stops and removes the Docker container
-        containers.remove(id);     // forget it on our side too
+        container.stop();          
+        containers.remove(id);     
         log.info("Destroyed database {}", id);
     }
 

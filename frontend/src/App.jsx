@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import SqlEditor from './components/SqlEditor.jsx'
+import SandboxControls from './components/SandboxControls.jsx'
 
 const BACKEND_URL = 'http://localhost:8080'
 
 export default function App() {
   const [status, setStatus] = useState('checking…')
   const [detail, setDetail] = useState(null)
+  const [dbId, SetDbId] = useState(null)
 
   useEffect(() => {
     fetch(`${BACKEND_URL}/health`)
@@ -35,8 +37,9 @@ export default function App() {
           <pre>{detail ? JSON.stringify(detail, null, 2) : ''}</pre>
         </div>
       </div>
-    
-      <SqlEditor />
+
+      <SandboxControls dbId = {dbId} setDbId={SetDbId}/>
+      <SqlEditor dbId = {dbId}/>
       
     </div>
   )

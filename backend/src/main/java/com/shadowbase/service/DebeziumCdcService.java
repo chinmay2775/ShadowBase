@@ -26,12 +26,14 @@ public class DebeziumCdcService {
     private static final Logger log = LoggerFactory.getLogger(DebeziumCdcService.class);
 
     private final ProductionEnviormentService productionEnvironmentService;
+    private final KafkaEventPublisher kafkaEventPublisher;
 
     private ExecutorService executor;
     private DebeziumEngine<ChangeEvent<String, String>> engine;
 
-    public DebeziumCdcService(ProductionEnviormentService productionEnvironmentService) {
+    public DebeziumCdcService(ProductionEnviormentService productionEnvironmentService, KafkaEventPublisher kafkaEventPublisher) {
         this.productionEnvironmentService = productionEnvironmentService;
+        this.kafkaEventPublisher = kafkaEventPublisher;
     }
 
     @PostConstruct
@@ -93,6 +95,7 @@ public class DebeziumCdcService {
 
     private void handleChangeEvent(ChangeEvent<String, String> record) {
         log.info("CDC event captured!\n  key:   {}\n  value: {}", record.key(), record.value());
+        kafkaEventPublisher.publish(record.key(), record.value());
     }
 
     // Make sure the production database has a table for Debezium to watch

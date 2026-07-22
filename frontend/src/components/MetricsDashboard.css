@@ -1,0 +1,31 @@
+.metrics-dashboard {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.stat-tile {
+  flex: 1;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: #1a1e26;
+  border: 1px solid #2a2f3a;
+  text-align: left;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 600;
+  color: #e6e8eb;
+  line-height: 1.1;
+}
+
+.stat-tile.status-good .stat-value { color: #34d399; }
+.stat-tile.status-warning .stat-value { color: #f0b429; }
+.stat-tile.status-critical .stat-value { color: #f87171; }
+
+.stat-label {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: #8b93a1;
+}

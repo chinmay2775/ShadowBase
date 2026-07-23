@@ -1,9 +1,7 @@
+import { useEffect, useState } from 'react'
 import './MetricsDashboard.css'
 
-const STATS = [
-  { key: 'captured', label: 'Events captured', value: 0 },
-  { key: 'replayed', label: 'Queries replayed', value: 0 },
-]
+const BACKEND_URL = 'http://localhost:8080'
 
 function errorRateStatus(rate) {
   if (rate === 0) return 'good'
@@ -12,16 +10,34 @@ function errorRateStatus(rate) {
 }
 
 export default function MetricsDashboard() {
-  const errorRate = 0
+  const [eventsCaptured, setEventsCaptured] = useState(0)
+  const errorRate = 0 
+  const queriesReplayed = 0
+
+  useEffect(() => {
+    const fetchMetrics = () => {
+      fetch(`${BACKEND_URL}/metrics`)
+        .then((res) => res.json())
+        .then((data) => setEventsCaptured(data.eventsCaptured))
+        .catch(() => {}) 
+    }
+
+    fetchMetrics() 
+    const interval = setInterval(fetchMetrics, 3000)
+    return () => clearInterval(interval)
+  }, [])
 
   return (
     <div className="metrics-dashboard">
-      {STATS.map((stat) => (
-        <div className="stat-tile" key={stat.key}>
-          <div className="stat-value">{stat.value}</div>
-          <div className="stat-label">{stat.label}</div>
-        </div>
-      ))}
+      <div className="stat-tile">
+        <div className="stat-value">{eventsCaptured}</div>
+        <div className="stat-label">Events captured</div>
+      </div>
+
+      <div className="stat-tile">
+        <div className="stat-value">{queriesReplayed}</div>
+        <div className="stat-label">Queries replayed</div>
+      </div>
 
       <div className={`stat-tile status-${errorRateStatus(errorRate)}`}>
         <div className="stat-value">{errorRate}%</div>

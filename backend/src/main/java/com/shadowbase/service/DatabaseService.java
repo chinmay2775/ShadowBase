@@ -26,8 +26,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class DatabaseService {
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseService.class);
-
+    private final TrafficLogService trafficLogService;
+    
     private final Map<String, PostgreSQLContainer> containers = new ConcurrentHashMap<>();
+
+    public DatabaseService(TrafficLogService trafficLogService){
+        this.trafficLogService = trafficLogService;
+    }
 
     public DatabaseInfo spinUp() {
         log.info("Spinning up a new PostgreSQL container...");
@@ -105,6 +110,7 @@ public class DatabaseService {
 
             if (hasResultSet) {
                 try (ResultSet rs = stmt.getResultSet()) {
+                    trafficLogService.record(id, sql, true, null);
                     return Map.of(
                             "success", true,
                             "rows", resultSetToList(rs)
@@ -112,6 +118,7 @@ public class DatabaseService {
                 }
             } else {
                 int updateCount = stmt.getUpdateCount();
+                trafficLogService.record(id, sql, true, null);
                 return Map.of(
                         "success", true,
                         "message", "Statement executed. Rows affected: " + updateCount
@@ -121,6 +128,7 @@ public class DatabaseService {
         } catch (SQLException e) {
             String message = e.getMessage() != null ? e.getMessage() : e.toString();
             log.warn("SQL error on database {}: {}", id, message);
+            trafficLogService.record(id, sql, false, message);
             return Map.of("success", false, "error", message);
         }
     }

@@ -27,7 +27,6 @@ public class DatabaseService {
 
     private static final Logger log = LoggerFactory.getLogger(DatabaseService.class);
     private final TrafficLogService trafficLogService;
-    
     private final Map<String, PostgreSQLContainer> containers = new ConcurrentHashMap<>();
 
     public DatabaseService(TrafficLogService trafficLogService){
@@ -96,21 +95,35 @@ public class DatabaseService {
     }
 
     public Map<String, Object> execute(String id, String sql) {
-        PostgreSQLContainer container = require(id);
-
         if (sql == null || sql.isBlank()) {
             return Map.of("success", false, "error", "No SQL provided");
         }
 
+        Map<String, Object> result = runSql(id, sql);
+        boolean success = Boolean.TRUE.equals(result.get("success"));
+        String errorMessage = success ? null : String.valueOf(result.get("error"));
+        trafficLogService.record(id, sql, success, errorMessage);
+        return result;
+    }
+
+    public Map<String, Object> executeForReplay(String id, String sql) {
+        if (sql == null || sql.isBlank()) {
+            return Map.of("success", false, "error", "No SQL provided");
+        }
+        return runSql(id, sql);
+    }
+
+    private Map<String, Object> runSql(String id, String sql) {
+        PostgreSQLContainer container = require(id);
+
         try (Connection conn = DriverManager.getConnection(
                 container.getJdbcUrl(), container.getUsername(), container.getPassword());
-             Statement stmt = conn.createStatement()) {
+            Statement stmt = conn.createStatement()) {
 
             boolean hasResultSet = stmt.execute(sql);
 
             if (hasResultSet) {
                 try (ResultSet rs = stmt.getResultSet()) {
-                    trafficLogService.record(id, sql, true, null);
                     return Map.of(
                             "success", true,
                             "rows", resultSetToList(rs)
@@ -118,7 +131,6 @@ public class DatabaseService {
                 }
             } else {
                 int updateCount = stmt.getUpdateCount();
-                trafficLogService.record(id, sql, true, null);
                 return Map.of(
                         "success", true,
                         "message", "Statement executed. Rows affected: " + updateCount
@@ -128,7 +140,6 @@ public class DatabaseService {
         } catch (SQLException e) {
             String message = e.getMessage() != null ? e.getMessage() : e.toString();
             log.warn("SQL error on database {}: {}", id, message);
-            trafficLogService.record(id, sql, false, message);
             return Map.of("success", false, "error", message);
         }
     }

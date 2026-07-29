@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 public class ReplayService {
 
     private static final Logger log = LoggerFactory.getLogger(ReplayService.class);
-
     private final TrafficLogService trafficLogService;
     private final DatabaseService databaseService;
 
@@ -30,7 +29,7 @@ public class ReplayService {
 
         return entries.stream()
                 .map(entry -> {
-                    Map<String, Object> result = databaseService.execute(targetDatabaseId, entry.sql());
+                    Map<String, Object> result = databaseService.executeForReplay(targetDatabaseId, entry.sql());
                     boolean success = Boolean.TRUE.equals(result.get("success"));
                     String errorMessage = success ? null : firstNonNull(result.get("error"), result.get("message"));
                     return new ReplayResult(entry.sql(), success, errorMessage);

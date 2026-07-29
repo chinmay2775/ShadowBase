@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import SqlEditor from './components/SqlEditor.jsx'
 import SandboxControls from './components/SandboxControls.jsx'
 import MetricsDashboard from './components/MetricsDashboard.jsx'
+import ReplayResults from './components/ReplayResults.jsx'
 
 const BACKEND_URL = 'http://localhost:8080'
 
@@ -42,6 +43,7 @@ export default function App() {
       <SandboxControls dbId = {dbId} setDbId={SetDbId}/>
       <SqlEditor dbId = {dbId}/>
       <MetricsDashboard />
+      <ReplayResults />
       
     </div>
   )

@@ -10,15 +10,17 @@ function errorRateStatus(rate) {
 }
 
 export default function MetricsDashboard() {
-  const [eventsCaptured, setEventsCaptured] = useState(0)
-  const errorRate = 0 
-  const queriesReplayed = 0
+  const [metrics, setMetrics] = useState({
+    eventsCaptured : 0,
+    queriesReplayed :0,
+    errorRate : 0,
+  })
 
   useEffect(() => {
     const fetchMetrics = () => {
       fetch(`${BACKEND_URL}/metrics`)
         .then((res) => res.json())
-        .then((data) => setEventsCaptured(data.eventsCaptured))
+        .then((data) => setMetrics(data))
         .catch(() => {}) 
     }
 
@@ -30,17 +32,17 @@ export default function MetricsDashboard() {
   return (
     <div className="metrics-dashboard">
       <div className="stat-tile">
-        <div className="stat-value">{eventsCaptured}</div>
+        <div className="stat-value">{metrics.eventsCaptured}</div>
         <div className="stat-label">Events captured</div>
       </div>
 
       <div className="stat-tile">
-        <div className="stat-value">{queriesReplayed}</div>
+        <div className="stat-value">{metrics.queriesReplayed}</div>
         <div className="stat-label">Queries replayed</div>
       </div>
 
-      <div className={`stat-tile status-${errorRateStatus(errorRate)}`}>
-        <div className="stat-value">{errorRate}%</div>
+      <div className={`stat-tile status-${errorRateStatus(metrics.errorRate)}`}>
+        <div className="stat-value">{metrics.errorRate}%</div>
         <div className="stat-label">Error rate</div>
       </div>
     </div>

@@ -19,7 +19,10 @@ public class MetricsController {
     }
 
     @GetMapping("/metrics")
-    public Map<String, Long> metrics() {
-        return Map.of("eventsCaptured", metricsService.getEventsCaptured());
+    public Map<String, Object> metrics() {
+        return Map.of("eventsCaptured", metricsService.getEventsCaptured(),
+                "queriesReplayed", metricsService.getQueriesReplayed(), 
+                "errorRate", metricsService.getErrorRatePercent()
+        );
     }
 }

@@ -20,4 +20,8 @@ public class TrafficLogService {
     public List<QueryLogEntry> getAll() {
         return List.copyOf(entries);
     }
+
+    public void clear(){
+        entries.clear();
+    }
 }

@@ -103,3 +103,19 @@
   color: #f87171;
   font-size: 0.85rem;
 }
+
+.replay-controls button.secondary {
+  background: transparent;
+  border: 1px solid #2a2f3a;
+  color: #8b93a1;
+}
+
+.replay-controls button.secondary:hover:not(:disabled) {
+  border-color: #f87171;
+  color: #f87171;
+}
+
+.replay-status {
+  color: #34d399;
+  font-size: 0.9rem;
+}

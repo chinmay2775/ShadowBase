@@ -83,6 +83,12 @@
             <artifactId>debezium-storage-file</artifactId>
             <version>3.6.0.Final</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.github.jsqlparser</groupId>
+            <artifactId>jsqlparser</artifactId>
+            <version>4.9</version>
+        </dependency>
     </dependencies>
 
     <build>

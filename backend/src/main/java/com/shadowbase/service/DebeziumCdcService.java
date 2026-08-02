@@ -98,7 +98,7 @@ public class DebeziumCdcService {
     private void handleChangeEvent(ChangeEvent<String, String> record) {
         log.info("CDC event captured!\n  key:   {}\n  value: {}", record.key(), record.value());
         kafkaEventPublisher.publish(record.key(), record.value());
-        metricsService.incrementEventsCaptured();
+            metricsService.incrementEventsCaptured();
     }
 
     // Make sure the production database has a table for Debezium to watch

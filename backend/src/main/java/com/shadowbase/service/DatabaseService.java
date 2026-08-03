@@ -10,6 +10,7 @@ import org.testcontainers.postgresql.PostgreSQLContainer;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.List;
 import java.util.UUID;
 import java.sql.ResultSet;
@@ -18,7 +19,9 @@ import java.util.ArrayList;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.DriverManager;
+import java.util.LinkedHashSet;
 import java.util.LinkedHashMap;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSetMetaData;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -172,5 +175,25 @@ public class DatabaseService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No database with id " + id);
         }
         return container;
+    }
+
+    public Set<String> getColumnNames(String id, String tableName) {
+        PostgreSQLContainer container = require(id);
+        Set<String> columns = new LinkedHashSet<>();
+
+        try (Connection conn = DriverManager.getConnection(
+                container.getJdbcUrl(), container.getUsername(), container.getPassword())) {
+
+            DatabaseMetaData meta = conn.getMetaData();
+            try (ResultSet rs = meta.getColumns(null, null, tableName.toLowerCase(), null)) {
+                while (rs.next()) {
+                    columns.add(rs.getString("COLUMN_NAME").toLowerCase());
+                }
+            }
+        } catch (SQLException e) {
+            log.warn("Failed to read schema for table {} on database {}: {}", tableName, id, e.getMessage());
+        }
+
+        return columns;
     }
 }

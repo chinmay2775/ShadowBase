@@ -3,6 +3,7 @@ import SqlEditor from './components/SqlEditor.jsx'
 import SandboxControls from './components/SandboxControls.jsx'
 import MetricsDashboard from './components/MetricsDashboard.jsx'
 import ReplayResults from './components/ReplayResults.jsx'
+import SchemaCheck from './components/SchemaCheck.jsx'
 
 const BACKEND_URL = 'http://localhost:8080'
 
@@ -41,6 +42,7 @@ export default function App() {
       </div>
 
       <SandboxControls dbId = {dbId} setDbId={SetDbId}/>
+      <SchemaCheck />
       <SqlEditor dbId = {dbId}/>
       <MetricsDashboard />
       <ReplayResults />

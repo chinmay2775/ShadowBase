@@ -1,0 +1,29 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.sidebar-button {
+  text-align: left;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #2a2f3a;
+  background: #1a1e26;
+  color: #8b93a1;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.sidebar-button:hover {
+  border-color: #2a78d6;
+  color: #e6e8eb;
+}
+
+.sidebar-button.active {
+  background: #2a78d6;
+  border-color: #2a78d6;
+  color: #fff;
+}   

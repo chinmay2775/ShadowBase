@@ -25,10 +25,11 @@
 .replay-controls button {
   padding: 8px 16px;
   border-radius: 8px;
-  border: none;
-  background: #2a78d6;
-  color: #fff;
+  border: 1px solid #2a2f3a;
+  background: #2bbd8a;
+  color: #0f1115;
   cursor: pointer;
+  font-weight: 700;
 }
 
 .replay-controls button:disabled {

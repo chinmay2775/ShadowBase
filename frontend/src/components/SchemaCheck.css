@@ -33,10 +33,11 @@
   align-self: flex-start;
   padding: 8px 16px;
   border-radius: 8px;
-  border: none;
-  background: #2a78d6;
-  color: #fff;
+  border: 1px solid #2a2f3a;;
+  background: #2bbd8a;
+  color: #2a2f3a;;
   cursor: pointer;
+  font-weight: 700
 }
 
 .schema-check-controls button:disabled {

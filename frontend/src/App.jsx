@@ -4,13 +4,16 @@ import SandboxControls from './components/SandboxControls.jsx'
 import MetricsDashboard from './components/MetricsDashboard.jsx'
 import ReplayResults from './components/ReplayResults.jsx'
 import SchemaCheck from './components/SchemaCheck.jsx'
+import Sidebar from './components/Sidebar.jsx'
+import './App.css'
 
 const BACKEND_URL = 'http://localhost:8080'
 
 export default function App() {
   const [status, setStatus] = useState('checking…')
   const [detail, setDetail] = useState(null)
-  const [dbId, SetDbId] = useState(null)
+  const [dbId, setDbId] = useState(null)
+  const [activeSection, setActiveSection] = useState('sandbox')
 
   useEffect(() => {
     fetch(`${BACKEND_URL}/health`)
@@ -41,12 +44,31 @@ export default function App() {
         </div>
       </div>
 
-      <SandboxControls dbId = {dbId} setDbId={SetDbId}/>
-      <SchemaCheck />
-      <SqlEditor dbId = {dbId}/>
-      <MetricsDashboard />
-      <ReplayResults />
-      
+      <div className="app-body">
+        <Sidebar activeSection={activeSection} onSelect={setActiveSection} />
+
+        <main className="app-main">
+          <section className={`app-section ${activeSection === 'sandbox' ? '' : 'section-hidden'}`}>
+            <h2 className="section-title">Sandbox</h2>
+            <p className="section-desc">Create a disposable database and run SQL against it.</p>
+            <SandboxControls dbId={dbId} setDbId={setDbId} />
+            <SqlEditor dbId={dbId} />
+          </section>
+
+          <section className={`app-section ${activeSection === 'pipeline' ? '' : 'section-hidden'}`}>
+            <h2 className="section-title">Production Pipeline</h2>
+            <p className="section-desc">Live change-capture metrics from the mock production database.</p>
+            <MetricsDashboard />
+          </section>
+
+          <section className={`app-section ${activeSection === 'migration' ? '' : 'section-hidden'}`}>
+            <h2 className="section-title">Migration Testing</h2>
+            <p className="section-desc">Check whether a proposed schema change is safe, then replay real traffic against it.</p>
+            <SchemaCheck />
+            <ReplayResults />
+          </section>
+        </main>
+      </div>
     </div>
   )
 }

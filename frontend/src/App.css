@@ -10,7 +10,7 @@ body {
 }
 
 .app {
-  max-width: 760px;
+  max-width: 1200px;
   margin: 8vh auto;
   padding: 0 24px;
 }
@@ -85,7 +85,7 @@ h1 {
 .run-button {
   background: #34d399;
   color: #0f1115;
-  border: none;
+  border: 1px solid #2a2f3a;
   border-radius: 6px;
   padding: 6px 14px;
   font-weight: 600;
@@ -151,4 +151,37 @@ h1 {
 .sandbox-error {
   margin-top: 10px;
   color: #f87171;
+}
+.app-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.app-section {
+  padding: 20px 24px;
+  border-radius: 12px;
+  background: #1a1e26;
+  border: 1px solid #2a2f3a;
+}
+
+.section-title {
+  margin: 0 0 4px;
+  font-size: 1.3rem;
+  color: #e6e8eb;
+}
+
+.section-desc {
+  margin: 0 0 16px;
+  font-size: 0.9rem;
+  color: #8b93a1;
+}
+.section-hidden {
+  display: none;
 }

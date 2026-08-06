@@ -38,22 +38,26 @@ h1 {
 
 .status-card pre {
   margin: 6px 0 0;
-  font-size: 0.85rem;
+  font-size: 1rem;
   color: #a9b1bd;
   white-space: pre-wrap;
 }
 
 .dot {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  margin-top: 4px;
+  margin-top: 8px;
   flex-shrink: 0;
   background: #f0b429;
 }
 
-.status-card.connected .dot { background: #34d399; }
-.status-card.offline .dot { background: #f87171; }
+.status-card.Connected .dot { background: #34d399; }
+.status-card.Offline .dot { background: #f87171; }
+
+.status-card strong {
+  font-size: 1.3rem;
+}
 
 .hint {
   color: #8b93a1;
@@ -184,4 +188,15 @@ h1 {
 }
 .section-hidden {
   display: none;
+}
+.section-panel {
+  padding: 16px;
+  border-radius: 12px;
+  background: #14171d;
+  border: 1px solid #2a2f3a;
+  margin-bottom: 16px;
+}
+
+.section-panel:last-child {
+  margin-bottom: 0;
 }

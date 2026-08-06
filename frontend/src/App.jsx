@@ -5,6 +5,7 @@ import MetricsDashboard from './components/MetricsDashboard.jsx'
 import ReplayResults from './components/ReplayResults.jsx'
 import SchemaCheck from './components/SchemaCheck.jsx'
 import Sidebar from './components/Sidebar.jsx'
+import ProductionConsole from './components/ProductionConsole.jsx'
 import './App.css'
 
 const BACKEND_URL = 'http://localhost:8080'
@@ -22,11 +23,11 @@ export default function App() {
         return res.json()
       })
       .then((data) => {
-        setStatus('connected')
+        setStatus('Connected')
         setDetail(data)
       })
       .catch((err) => {
-        setStatus('offline')
+        setStatus('Offline')
         setDetail({ error: err.message })
       })
   }, [])
@@ -58,7 +59,14 @@ export default function App() {
           <section className={`app-section ${activeSection === 'pipeline' ? '' : 'section-hidden'}`}>
             <h2 className="section-title">Production Pipeline</h2>
             <p className="section-desc">Live change-capture metrics from the mock production database.</p>
-            <MetricsDashboard />
+
+            <div className="section-panel">
+              <MetricsDashboard />
+            </div>
+
+            <div className="section-panel">
+              <ProductionConsole />
+            </div>
           </section>
 
           <section className={`app-section ${activeSection === 'migration' ? '' : 'section-hidden'}`}>
@@ -66,6 +74,7 @@ export default function App() {
             <p className="section-desc">Check whether a proposed schema change is safe, then replay real traffic against it.</p>
             <SchemaCheck />
             <ReplayResults />
+            
           </section>
         </main>
       </div>
